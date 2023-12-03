@@ -8,7 +8,7 @@ import { NextRequest } from "next/server";
 // {user: User, isLoggedIn: boolean, message: Results}
 // Req: {}
 export async function GET(request: NextRequest) {
-  let message = Results.SUCCESS;
+  let message: string = Results.SUCCESS;
   const response = new Response();
 
   const { isLoggedIn, currentUser } = await isAuth(request, response);

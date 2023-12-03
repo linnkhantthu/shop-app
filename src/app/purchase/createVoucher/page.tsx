@@ -3,8 +3,6 @@
 import DeleteButton from "@/app/components/DeleteButton";
 import Select from "@/app/components/Select";
 import VoucherTableData from "@/app/components/VoucherTableData";
-import { User } from "@/lib/models";
-import { getDateNow } from "@/lib/utils";
 import { Product, Trader, Voucher, VoucherItem } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 

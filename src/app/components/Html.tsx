@@ -7,13 +7,14 @@ import { usePathname } from "next/navigation";
 import Container from "./Container";
 import Link from "next/link";
 import Sidebar from "./Sidebar";
+import useUser from "@/lib/useUser";
 
 const inter = Inter({ subsets: ["latin"] });
 
 function Html({ children }: { children: ReactNode }) {
   // States
   const [theme, setTheme] = useState(true); // True means dark mode
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const { data, isError, isLoading } = useUser();
 
   // Vars
   const fullPathName = usePathname(); // Get current pathname
@@ -50,7 +51,13 @@ function Html({ children }: { children: ReactNode }) {
                   <label
                     htmlFor="my-drawer-3"
                     aria-label="open sidebar"
-                    className="btn btn-square btn-ghost"
+                    className={
+                      isLoading
+                        ? "hidden"
+                        : data.isLoggedIn
+                        ? "btn btn-square btn-ghost"
+                        : "hidden"
+                    }
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -75,9 +82,13 @@ function Html({ children }: { children: ReactNode }) {
                       <ThemeChanger theme={theme} handleTheme={handleTheme} />
                     </li>
                     <li>
-                      <a>
-                        <FaRegUserCircle />
-                      </a>
+                      {isLoading ? (
+                        "Loading..."
+                      ) : (
+                        <a>
+                          <FaRegUserCircle />
+                        </a>
+                      )}
                     </li>
                   </ul>
                 </div>
@@ -101,13 +112,17 @@ function Html({ children }: { children: ReactNode }) {
               </div>
             </div>
             {/* Sidebar */}
-            <Sidebar
-              isLoggedIn={isLoggedIn}
-              theme={theme}
-              handleTheme={handleTheme}
-              pathname={splitedPathName}
-              closeSidebar={closeSidebar}
-            />
+            {isLoading ? (
+              ""
+            ) : (
+              <Sidebar
+                isLoggedIn={data.isLoggedIn}
+                theme={theme}
+                handleTheme={handleTheme}
+                pathname={splitedPathName}
+                closeSidebar={closeSidebar}
+              />
+            )}
           </div>
         </main>
       </body>
