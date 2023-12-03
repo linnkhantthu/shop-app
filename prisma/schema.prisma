@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                       Int       @id @default(autoincrement())
+  firstName                String    @db.VarChar(255)
+  lastName                 String    @db.VarChar(255)
+  email                    String    @unique @db.VarChar(255)
+  dob                      DateTime  @db.Date()
+  password                 String    @db.VarChar(255)
+  role                     UserRole  @default(USER)
+  verified                 Boolean   @default(false)
+  verifyToken              String?   @unique
+  verifyTokenExpire        DateTime?
+  resetPasswordToken       String?   @unique
+  resetPasswordTokenExpire DateTime?
+  sessionId                String?   @unique
+  traders                  Trader[]
+  vouchers                 Voucher[]
+  products                 Product[]
+}
+
+model Trader {
+  id       Int        @id @default(autoincrement())
+  fullName String     @db.VarChar(255)
+  email    String     @unique @db.VarChar(255)
+  address  String     @db.VarChar(255)
+  phoneNo  String     @db.VarChar(255)
+  amount   Float      @default(0) @db.DoublePrecision()
+  role     TraderRole
+  user     User       @relation(fields: [userId], references: [id])
+  userId   Int
+  Vouchers Voucher[]
+}
+
+model Voucher {
+  id           Int           @id @default(autoincrement())
+  date         DateTime      @db.Date()
+  currency     Currency      @default(MyanmarKyat)
+  amount       Float         @default(0) @db.DoublePrecision()
+  voucherType  VoucherType
+  trader       Trader        @relation(fields: [traderId], references: [id])
+  traderId     Int
+  user         User          @relation(fields: [userId], references: [id])
+  userId       Int
+  VoucherItems VoucherItem[]
+}
+
+model VoucherItem {
+  id          Int     @id @default(autoincrement())
+  product     Product @relation(fields: [productId], references: [id])
+  productId   Int
+  productName String
+  price       Float?  @default(0.0)
+  quantity    Int     @default(0)
+  notes       String?
+  voucher     Voucher @relation(fields: [voucherId], references: [id])
+  voucherId   Int
+}
+
+model Product {
+  id                 Int           @id @default(autoincrement())
+  codeNo             Int           @default(autoincrement())
+  name               String        @db.VarChar(255)
+  purchasePrice      Float         @default(0) @db.DoublePrecision()
+  purchasedCurrency  Currency?     @default(MyanmarKyat)
+  transportationFees Float?
+  extraFees          Float?
+  salesPercentage    Float?        @default(10) @db.DoublePrecision()
+  salesCurrency      Currency?     @default(MyanmarKyat)
+  height             Float?
+  width              Float?
+  lenght             Float?
+  weight             Float?
+  user               User          @relation(fields: [userId], references: [id])
+  userId             Int
+  VoucherItem        VoucherItem[]
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum TraderRole {
+  SUPPLIER
+  CUSTOMER
+}
+
+enum VoucherType {
+  PURCHASE
+  PURCHASERETURN
+  SALE
+  SALERETURN
+}
+
+enum Currency {
+  MyanmarKyat
+  Yuan
+  USDollar
+}
