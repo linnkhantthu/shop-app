@@ -3,7 +3,7 @@
 import DeleteButton from "@/app/components/DeleteButton";
 import Select from "@/app/components/Select";
 import VoucherTableData from "@/app/components/VoucherTableData";
-import { UserRole, User } from "@/lib/models";
+import { User } from "@/lib/models";
 import { getDateNow } from "@/lib/utils";
 import { Product, Trader, Voucher, VoucherItem } from "@prisma/client";
 import React, { useEffect, useState } from "react";
@@ -16,15 +16,15 @@ function CreateVoucher() {
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>([]); // CRUD by User
   const [productList, setProductList] = useState<Product[]>([]);
 
-  // Vars: currentUser
-  const user: User = {
-    id: 1,
-    firstName: "Lin Khant",
-    lastName: "Thu",
-    dob: getDateNow(),
-    email: "linnkhantthu@gmail.com",
-    role: UserRole.USER,
-  };
+  // // Vars: currentUser
+  // const user: User = {
+  //   id: 1,
+  //   firstName: "Lin Khant",
+  //   lastName: "Thu",
+  //   dob: getDateNow(),
+  //   email: "linnkhantthu@gmail.com",
+  //   role: UserRole.USER,
+  // };
 
   useEffect(() => {
     // Init

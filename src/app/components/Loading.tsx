@@ -4,7 +4,7 @@ function Loading() {
   return (
     <div className="flex flex-col justify-center">
       <span className=" flex flex-row justify-center">
-        <span className="loading loading-dots loading-lg"></span>
+        <span className="loading loading-dots loading-sm"></span>
       </span>
     </div>
   );

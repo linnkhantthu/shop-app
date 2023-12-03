@@ -2,7 +2,7 @@ import crypto from "crypto";
 import { Resend } from "resend";
 import nodemailer from "nodemailer";
 import { getSession } from "./session";
-import { getUserByEmail, getUserByUsername } from "./query/user/query";
+import { getUserByEmail } from "./query/user/query";
 import { User } from "./models";
 
 export function generateToken(): string {

@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import useUser from "@/lib/useUser";
 import { FlashMessage, Results, User } from "@/lib/models";
 import Loading from "../../components/Loading";
+import Container from "@/app/components/Container";
 
 const Auth = () => {
   const { data, isError, isLoading, mutateUser } = useUser();
@@ -25,11 +26,12 @@ const Auth = () => {
     e.preventDefault();
     setIsSubmitting(true);
     const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const username = formData.get("username");
+    const email = formData.get("email");
     const password = formData.get("password");
-    if (username && password) {
+
+    if (email && password) {
       const loginData = {
-        username: username,
+        email: email,
         password: password,
       };
       const res = await fetch("/api/users/login", {
@@ -66,14 +68,16 @@ const Auth = () => {
     e.preventDefault();
     setIsSubmitting(true);
     const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const username = formData.get("username");
+    const firstName = formData.get("firstName");
+    const lastName = formData.get("lastName");
     const email = formData.get("email");
     const dob = formData.get("dob");
     const password = formData.get("password");
 
-    if (username && password && email && dob && password) {
+    if (firstName && lastName && password && email && dob && password) {
       const registerData = {
-        username: username,
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         dob: dob,
         password: password,
@@ -107,28 +111,32 @@ const Auth = () => {
     }
     setIsSubmitting(false);
   };
-  return isError ? (
-    Results.CONNECTION_ERROR
-  ) : isLoading ? (
-    <Loading />
-  ) : data?.user === undefined ? (
-    isShowRegisterForm ? (
-      <RegisterForm
-        handler={showRegisterForm}
-        handleRegister={handleRegister}
-        flashMessage={registerFlashMessage}
-        isSubmitting={isSubmitting}
-      />
-    ) : (
-      <LoginForm
-        handler={showRegisterForm}
-        handleLogin={handleLogin}
-        flashMessage={loginFlashMessage}
-        isSubmitting={isSubmitting}
-      />
-    )
-  ) : (
-    redirect("/")
+  return (
+    <Container>
+      {isError ? (
+        Results.CONNECTION_ERROR
+      ) : isLoading ? (
+        <Loading />
+      ) : data?.user === undefined ? (
+        isShowRegisterForm ? (
+          <RegisterForm
+            handler={showRegisterForm}
+            handleRegister={handleRegister}
+            flashMessage={registerFlashMessage}
+            isSubmitting={isSubmitting}
+          />
+        ) : (
+          <LoginForm
+            handler={showRegisterForm}
+            handleLogin={handleLogin}
+            flashMessage={loginFlashMessage}
+            isSubmitting={isSubmitting}
+          />
+        )
+      ) : (
+        redirect("/")
+      )}
+    </Container>
   );
 };
 

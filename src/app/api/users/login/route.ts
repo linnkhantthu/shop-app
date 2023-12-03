@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { Results, User } from "@/lib/models";
+import { Results } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import prisma from "@/db";
 import { getUserByEmail, insertSessionIdByEmail } from "@/lib/query/user/query";
@@ -23,14 +23,6 @@ export async function POST(request: NextRequest) {
     if (user && hashPassword.decrypt(user.password) === password) {
       const { sessionId } = await insertSessionIdByEmail(user.email);
       if (sessionId) {
-        //       id: number;
-        // firstName: string;
-        // lastName: string;
-        // email: string;
-        // dob: Date;
-        // role: UserRole;
-        // verified: boolean;
-        // sessionId: string;
         session.user = {
           id: user.id,
           firstName: user.firstName,

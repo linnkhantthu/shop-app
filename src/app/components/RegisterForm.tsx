@@ -2,6 +2,8 @@ import { FlashMessage } from "@/lib/models";
 import React, { useState } from "react";
 import Legend from "./Legend";
 import Submit from "@/app/components/Submit";
+import Label from "./Label";
+import Input from "./Input";
 
 const RegisterForm = ({
   handler,
@@ -14,7 +16,8 @@ const RegisterForm = ({
   flashMessage: FlashMessage | undefined;
   isSubmitting: boolean;
 }) => {
-  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState(Date.now().toString());
   const [password, setPassword] = useState("");
@@ -22,66 +25,70 @@ const RegisterForm = ({
 
   return (
     <>
-      <div className="flex flex-row justify-center w-screen">
+      <div className="flex flex-row justify-center">
         <fieldset className="flex flex-col w-1/3">
           <Legend title={"Register"} flashMessage={flashMessage} />
           <form
             className=" form form-control text-lg"
             onSubmit={handleRegister}
           >
-            <label className="label label-text" htmlFor="username">
-              Username
-            </label>
-            <input
-              className="input input-bordered"
-              type="text"
-              name="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+            <Label text={"First Name"} htmlFor={"firstName"} />
+            <Input
+              id={"firstName"}
+              name={"firstName"}
+              type={"text"}
+              value={firstName}
+              required={true}
+              setState={setFirstName}
+            />
+            <Label text={"Last Name"} htmlFor={"lastName"} />
+            <Input
+              id={"lastName"}
+              name={"lastName"}
+              type={"text"}
+              value={lastName}
+              required={true}
+              setState={setLastName}
             />
 
-            <label className="label label-text" htmlFor="email">
-              email
-            </label>
-            <input
-              className="input input-bordered"
-              type="email"
-              name="email"
+            <Label text={"Email"} htmlFor={"email"} />
+            <Input
+              id={"email"}
+              name={"email"}
+              type={"email"}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              required={true}
+              setState={setEmail}
             />
 
-            <label className="label label-text" htmlFor="dob">
-              Birth Date
-            </label>
-            <input
-              className="input input-bordered"
-              type="date"
-              name="dob"
+            <Label text={"Birt Date"} htmlFor={"dob"} />
+            <Input
+              id={"dob"}
+              name={"dob"}
+              type={"date"}
               value={dob}
-              onChange={(e) => setDob(e.target.value)}
+              required={true}
+              setState={setDob}
             />
 
-            <label className="label label-text" htmlFor="password">
-              Password
-            </label>
-            <input
-              className="input input-bordered"
-              type="password"
-              name="password"
+            <Label text={"Password"} htmlFor={"password"} />
+            <Input
+              id={"password"}
+              name={"password"}
+              type={"password"}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              required={true}
+              setState={setPassword}
             />
 
-            <label className="label label-text" htmlFor="confirmPassword">
-              Confirm Password
-            </label>
-            <input
-              className="input input-bordered"
-              type="password"
-              name="confirmPassword"
+            <Label text={"Confirm Password"} htmlFor={"confirmPassword"} />
+            <Input
+              id={"confirmPassword"}
+              name={"confirmPassword"}
+              type={"password"}
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              required={true}
+              setState={setConfirmPassword}
             />
 
             {confirmPassword !== password ? (

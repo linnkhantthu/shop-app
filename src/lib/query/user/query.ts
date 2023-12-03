@@ -65,46 +65,27 @@ export async function insertVerifyTokenByEmail(email?: string) {
   return { token };
 }
 
-export async function getUserByUsername(username?: string) {
-  if (username) {
-    const data = await prisma.user.findFirst({
-      where: {
-        username: username,
-      },
-    });
-    if (data !== null) {
-      return data;
-    }
-  }
-  return undefined;
-}
-
 export async function insertUser(
-  username?: string,
+  firstName?: string,
+  lastName?: string,
   email?: string,
   dob?: string,
   password?: string,
   host?: string
 ) {
   const hashPassword = new HashPassword();
-  if (username && email && dob && password) {
+  if (firstName && lastName && email && dob && password) {
     const isUserExists = await prisma.user.findFirst({
       where: {
-        OR: [
-          {
-            username: username,
-          },
-          {
-            email: email,
-          },
-        ],
+        email: email,
       },
     });
     if (isUserExists === null) {
       const encryptedPassword = hashPassword.encrypt(password);
       const user = await prisma.user.create({
         data: {
-          username: username,
+          firstName: firstName,
+          lastName: lastName,
           email: email,
           dob: new Date(dob),
           password: encryptedPassword,
@@ -129,7 +110,7 @@ export async function insertUser(
           "Todo: Verify your email",
           EmailTemplate({
             description: "to complete the verification",
-            lastName: user.username,
+            lastName: user.lastName,
             token: user.verifyToken!,
             host: host!,
             path: "/users/verify/",

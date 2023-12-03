@@ -1,5 +1,5 @@
 "use client";
-import { AuthResults, FlashMessage, responseModel } from "@/lib/models";
+import { FlashMessage, Results, responseModel } from "@/lib/models";
 import useUser from "@/lib/useUser";
 import { redirect } from "next/navigation";
 import React, { FormEvent, useState } from "react";
@@ -14,7 +14,7 @@ function ForgotPassword() {
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const formEmail = formData.get("email");
     try {
-      if (formEmail?.length !== 0) {
+      if (formEmail !== "") {
         const res = await fetch("/api/users/forgotPassword", {
           method: "POST",
           headers: {
@@ -44,7 +44,7 @@ function ForgotPassword() {
   return (
     <>
       {isError ? (
-        <span>{AuthResults.CONNECTIONFAILED}</span>
+        <span>{Results.CONNECTION_ERROR}</span>
       ) : isLoading ? (
         <Loading />
       ) : data.user === undefined ? (

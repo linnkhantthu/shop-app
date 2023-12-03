@@ -11,11 +11,11 @@ function Legend({
   return (
     <legend className="flex flex-col w-full">
       {flashMessage ? (
-        <small
+        <span
           className={"mb-2 rounded p-1 pl-2 w-full " + flashMessage.category}
         >
           {flashMessage.message}
-        </small>
+        </span>
       ) : (
         ""
       )}

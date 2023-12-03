@@ -1,8 +1,6 @@
 // getCookie
 
-import prisma from "@/db";
 import { Results } from "@/lib/models";
-import { getUserByUsername } from "@/lib/query/user/query";
 import { createResponse } from "@/lib/session";
 import { isAuth } from "@/lib/utils";
 import { NextRequest } from "next/server";
@@ -24,12 +22,3 @@ export async function GET(request: NextRequest) {
     { status: 200 }
   );
 }
-getUserByUsername()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });

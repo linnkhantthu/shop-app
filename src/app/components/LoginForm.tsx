@@ -2,6 +2,8 @@ import { FlashMessage } from "@/lib/models";
 import React, { useState } from "react";
 import Legend from "./Legend";
 import Submit from "@/app/components/Submit";
+import Input from "./Input";
+import Label from "./Label";
 
 const LoginForm = ({
   handler,
@@ -14,44 +16,34 @@ const LoginForm = ({
   flashMessage: FlashMessage | undefined;
   isSubmitting: boolean;
 }) => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
     <>
-      <div className="flex flex-row justify-center m-2 w-screen">
+      <div className="flex flex-row justify-center">
         <fieldset className="flex flex-col w-1/3">
           <Legend title={"Login"} flashMessage={flashMessage} />
           <form
             className="flex flex-col flex-none form form-control text-lg"
             onSubmit={handleLogin}
           >
-            <label className="label label-text" htmlFor="username">
-              Username
-            </label>
-            <input
-              id="username"
-              className="input input-bordered"
-              type="text"
-              name="username"
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-              }}
-              required
+            <Label text={"Email"} htmlFor={"email"} />
+            <Input
+              id={"email"}
+              name={"email"}
+              type={"email"}
+              value={email}
+              required={true}
+              setState={setEmail}
             />
-            <label className="label label-text" htmlFor="password">
-              Password
-            </label>
-            <input
-              id="password"
-              className="input input-bordered"
-              type="password"
-              name="password"
+            <Label text={"Password"} htmlFor={"password"} />
+            <Input
+              id={"password"}
+              name={"password"}
+              type={"password"}
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-              required
+              required={true}
+              setState={setPassword}
             />
             <Submit isSubmitting={isSubmitting} />
           </form>

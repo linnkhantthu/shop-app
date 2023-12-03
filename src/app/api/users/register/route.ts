@@ -16,9 +16,10 @@ export async function POST(request: NextRequest) {
 
   if (currentUser === undefined) {
     status = 200;
-    const { username, email, dob, password } = await request.json();
+    const { firstName, lastName, email, dob, password } = await request.json();
     user = await insertUser(
-      username,
+      firstName,
+      lastName,
       email,
       dob,
       password,
