@@ -34,7 +34,7 @@ function Suppliers() {
         address: address,
         phoneNo: phoneNo,
         amount: 0,
-        role: "SUPPLIER",
+        role: TraderRole.SUPPLIER,
         userId: 0,
       };
       setSuppliers([newSupplier, ...suppliers]);

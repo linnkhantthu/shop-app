@@ -83,8 +83,8 @@ export enum IconColors {
  * Trader Role
  */
 export enum TraderRole {
-  SUPPLIER,
-  CUSTOMER,
+  SUPPLIER = "SUPPLIER",
+  CUSTOMER = "CUSTOMER",
 }
 
 /**
