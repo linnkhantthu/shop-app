@@ -47,6 +47,16 @@ export interface User {
   sessionId: string;
 }
 
+export interface Trader {
+  id: number;
+  fullName: string;
+  email: string;
+  address: string;
+  phoneNo: string;
+  amount: number;
+  role: TraderRole;
+}
+
 // Enums to decide which field we are refering
 /**
  * Supplier Enum

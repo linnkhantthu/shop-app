@@ -1,9 +1,8 @@
 "use client";
 import DeleteButton from "@/app/components/DeleteButton";
 import PurchaseTableData from "@/app/components/PurchaseTableData";
-import { SupplierEnum, TraderRole } from "@/lib/models";
-import { Trader } from "@prisma/client";
-import React, { FormEvent, useState } from "react";
+import { SupplierEnum, Trader, TraderRole } from "@/lib/models";
+import React, { FormEvent, useEffect, useState } from "react";
 
 function Suppliers() {
   const [suppliers, setSuppliers] = useState<Trader[]>([]);
@@ -23,7 +22,7 @@ function Suppliers() {
    * Add Supplier
    * @param {FormEvent} e onSubmit form event.
    */
-  function handleAddSupplier(e: FormEvent) {
+  async function handleAddSupplier(e: FormEvent) {
     e.preventDefault();
     setIsSubmitted(true);
     if (name !== "" && address !== "" && phoneNo !== "" && email !== "") {
@@ -33,11 +32,25 @@ function Suppliers() {
         email: email,
         address: address,
         phoneNo: phoneNo,
-        amount: 0,
         role: TraderRole.SUPPLIER,
-        userId: 0,
+        amount: 0,
       };
-      setSuppliers([newSupplier, ...suppliers]);
+      const res = await fetch("/api/traders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newSupplier),
+      });
+      if (res.ok) {
+        const { trader, message }: { trader: Trader; message: string } =
+          await res.json();
+        if (trader) {
+          setSuppliers([trader, ...suppliers]);
+        } else {
+          // Flash Message
+        }
+      }
       setName("");
       setEmail("");
       setAddress("");
@@ -187,7 +200,7 @@ function Suppliers() {
                 isEditable={false}
               />
               <PurchaseTableData
-                data={supplier.email}
+                data={supplier.email!}
                 fieldToUpdate={SupplierEnum.EMAIL}
                 handleUpdateSupplier={handleUpdateSupplier}
                 id={supplier.id}
@@ -196,7 +209,7 @@ function Suppliers() {
                 isEditable={false}
               />
               <PurchaseTableData
-                data={supplier.address}
+                data={supplier.address!}
                 fieldToUpdate={SupplierEnum.ADDRESS}
                 handleUpdateSupplier={handleUpdateSupplier}
                 id={supplier.id}
@@ -205,7 +218,7 @@ function Suppliers() {
                 isEditable={false}
               />
               <PurchaseTableData
-                data={supplier.phoneNo}
+                data={supplier.phoneNo!}
                 fieldToUpdate={SupplierEnum.PHONENO}
                 handleUpdateSupplier={handleUpdateSupplier}
                 id={supplier.id}

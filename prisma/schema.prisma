@@ -35,10 +35,10 @@ model Trader {
   email    String     @unique @db.VarChar(255)
   address  String     @db.VarChar(255)
   phoneNo  String     @db.VarChar(255)
-  amount   Float      @default(0) @db.DoublePrecision()
+  amount   Float?     @default(0) @db.DoublePrecision()
   role     TraderRole
-  user     User       @relation(fields: [userId], references: [id])
-  userId   Int
+  user     User?      @relation(fields: [userId], references: [id])
+  userId   Int?
   Vouchers Voucher[]
 }
 

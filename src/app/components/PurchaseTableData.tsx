@@ -19,7 +19,7 @@ function PurchaseTableData({
   isEditable = true,
 }: {
   id: number;
-  data: string;
+  data?: string;
   fieldToUpdate: string;
   inputType: string;
   isInputRequired: boolean;
@@ -35,7 +35,7 @@ function PurchaseTableData({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleUpdateSupplier(id, fieldToUpdate, data);
+            handleUpdateSupplier(id, fieldToUpdate, data!);
             setIsEdit(!isEdit);
           }}
         >
