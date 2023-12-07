@@ -1,7 +1,11 @@
 import { NextRequest } from "next/server";
 import { Results, Trader, TraderRole } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
-import { getTradersByRole, insertTrader } from "@/lib/query/trader/query";
+import {
+  getTradersByRole,
+  insertTrader,
+  updateTraderById,
+} from "@/lib/query/trader/query";
 
 // { trader: Trader, message: Results}
 // POST data.json(): Trader
@@ -38,8 +42,8 @@ export async function POST(request: NextRequest) {
   });
 }
 
-// { trader: Trader, message: Results}
-// POST data.json(): Trader
+// { traders: Trader[], message: string}
+// GET data.json(): trader: Trader
 export async function GET(request: NextRequest) {
   let message: string = Results.REQUIRED_LOGIN;
 
@@ -63,6 +67,39 @@ export async function GET(request: NextRequest) {
     return createResponse(
       response,
       JSON.stringify({ traders: traders, message: message }),
+      {
+        status: 200,
+      }
+    );
+  }
+  return createResponse(response, JSON.stringify({ message: message }), {
+    status: 403,
+  });
+}
+
+// { trader: Trader, message: string}
+// PUT data.json(): id, field, data
+export async function PUT(request: NextRequest) {
+  let message: string = Results.REQUIRED_LOGIN;
+
+  // Create response
+  const response = new Response();
+
+  // Create session
+  const session = await getSession(request, response);
+  let { user: currentUser } = session;
+
+  // If User is Logged in
+  if (currentUser) {
+    const { id, field, data } = await request.json(); // Insert Trader into Database
+    const { updatedTrader } = await updateTraderById(id, field, data);
+    message = updatedTrader
+      ? "Updated trader successfully."
+      : "Failed to update traders.";
+
+    return createResponse(
+      response,
+      JSON.stringify({ trader: updatedTrader, message: message }),
       {
         status: 200,
       }

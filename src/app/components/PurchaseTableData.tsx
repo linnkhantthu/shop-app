@@ -35,7 +35,7 @@ function SupplierTableData({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleUpdateSupplier(id, fieldToUpdate!, data!);
+            handleUpdateSupplier(id, fieldToUpdate!, _data!);
             setIsEdit(!isEdit);
           }}
         >

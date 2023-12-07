@@ -95,31 +95,51 @@ function Suppliers() {
    * @param {string} field Field from SupplierEnum to decide which field to update.
    * @param {string} data Data to update.
    */
-  const handleUpdateSupplier = (
+  const handleUpdateSupplier = async (
     id: number,
     field: TraderEnum,
     data: string
   ) => {
-    const updatedSupplier = suppliers.filter((value) => value.id === id)[0];
-    switch (field) {
-      case TraderEnum.fullName:
-        updatedSupplier.fullName = data;
-        break;
-      case TraderEnum.email:
-        updatedSupplier.email = data;
-        break;
-      case TraderEnum.address:
-        updatedSupplier.address = data;
-        break;
-      case TraderEnum.phoneNo:
-        updatedSupplier.phoneNo = data;
-        break;
-      default:
-        break;
+    // PUT data
+    const res = await fetch("/api/traders", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: id, field: field, data: data }),
+    });
+
+    if (res.ok) {
+      const { trader, message } = await res.json();
+
+      if (trader) {
+        const extractedSupplier = suppliers.filter((value) => value.id !== id);
+        setSuppliers([trader, ...extractedSupplier]);
+      } else {
+        alert(message);
+      }
     }
-    // Get the rest of the data
-    const extractedSupplier = suppliers.filter((value) => value.id !== id);
-    setSuppliers([updatedSupplier, ...extractedSupplier]);
+
+    // const updatedSupplier = suppliers.filter((value) => value.id === id)[0];
+    // switch (field) {
+    //   case TraderEnum.fullName:
+    //     updatedSupplier.fullName = data;
+    //     break;
+    //   case TraderEnum.email:
+    //     updatedSupplier.email = data;
+    //     break;
+    //   case TraderEnum.address:
+    //     updatedSupplier.address = data;
+    //     break;
+    //   case TraderEnum.phoneNo:
+    //     updatedSupplier.phoneNo = data;
+    //     break;
+    //   default:
+    //     break;
+    // }
+    // // Get the rest of the data
+    // const extractedSupplier = suppliers.filter((value) => value.id !== id);
+    // setSuppliers([updatedSupplier, ...extractedSupplier]);
   };
 
   return (
