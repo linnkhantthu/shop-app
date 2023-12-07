@@ -1,5 +1,5 @@
 import prisma from "@/db";
-import { Trader } from "@/lib/models";
+import { Trader, TraderRole } from "@/lib/models";
 
 export async function insertTrader(trader: Trader) {
   let addedTrader: Trader | undefined = undefined;
@@ -21,4 +21,13 @@ export async function insertTrader(trader: Trader) {
     console.log(addedTrader);
   }
   return { addedTrader };
+}
+
+export async function getTradersByRole(role: any) {
+  const traders = await prisma.trader.findMany({
+    where: {
+      role: role,
+    },
+  });
+  return { traders };
 }

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { Results, Trader } from "@/lib/models";
+import { Results, Trader, TraderRole } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
-import { insertTrader } from "@/lib/query/trader/query";
+import { getTradersByRole, insertTrader } from "@/lib/query/trader/query";
 
 // { trader: Trader, message: Results}
 // POST data.json(): Trader
@@ -28,6 +28,41 @@ export async function POST(request: NextRequest) {
     return createResponse(
       response,
       JSON.stringify({ trader: addedTrader, message: message }),
+      {
+        status: 200,
+      }
+    );
+  }
+  return createResponse(response, JSON.stringify({ message: message }), {
+    status: 403,
+  });
+}
+
+// { trader: Trader, message: Results}
+// POST data.json(): Trader
+export async function GET(request: NextRequest) {
+  let message: string = Results.REQUIRED_LOGIN;
+
+  // Create response
+  const response = new Response();
+
+  // Create session
+  const session = await getSession(request, response);
+  let { user: currentUser } = session;
+
+  // If User is Logged in
+  if (currentUser) {
+    const { searchParams } = new URL(request.url);
+    const role = searchParams.get("role");
+    // Insert Trader into Database
+    const { traders } = await getTradersByRole(role);
+    message = traders
+      ? "Fetched traders successfully."
+      : "Failed to fetch traders.";
+
+    return createResponse(
+      response,
+      JSON.stringify({ traders: traders, message: message }),
       {
         status: 200,
       }

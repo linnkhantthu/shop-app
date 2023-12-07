@@ -1,16 +1,34 @@
 "use client";
 import DeleteButton from "@/app/components/DeleteButton";
+import Loading from "@/app/components/Loading";
 import PurchaseTableData from "@/app/components/PurchaseTableData";
 import { SupplierEnum, Trader, TraderRole } from "@/lib/models";
 import React, { FormEvent, useEffect, useState } from "react";
+import { json } from "stream/consumers";
 
 function Suppliers() {
+  const [areSuppliersLoading, setAreSuppliersLoading] = useState(true);
   const [suppliers, setSuppliers] = useState<Trader[]>([]);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
   const [email, setEmail] = useState("");
+  const [isSumbmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  async function fetchTraders() {
+    const res = await fetch("/api/traders?role=SUPPLIER", {
+      method: "GET",
+    });
+    const { traders, message } = await res.json();
+    setSuppliers(traders);
+  }
+
+  useEffect(() => {
+    fetchTraders().then(() => {
+      setAreSuppliersLoading(false);
+    });
+  }, []);
 
   // Styles for input
   const inputStyle =
@@ -24,6 +42,7 @@ function Suppliers() {
    */
   async function handleAddSupplier(e: FormEvent) {
     e.preventDefault();
+    setIsSubmitting(true);
     setIsSubmitted(true);
     if (name !== "" && address !== "" && phoneNo !== "" && email !== "") {
       const newSupplier: Trader = {
@@ -48,7 +67,7 @@ function Suppliers() {
         if (trader) {
           setSuppliers([trader, ...suppliers]);
         } else {
-          // Flash Message
+          alert(message);
         }
       }
       setName("");
@@ -57,6 +76,7 @@ function Suppliers() {
       setPhoneNo("");
       setIsSubmitted(false);
     }
+    setIsSubmitting(false);
   }
 
   /**
@@ -162,7 +182,7 @@ function Suppliers() {
             className="btn btn-success btn-xs sm:btn-sm mr-2 mt-2"
             type="submit"
           >
-            Submit
+            {isSumbmitting ? <Loading /> : "Submit"}
           </button>
         </form>
       </fieldset>
@@ -178,7 +198,6 @@ function Suppliers() {
           </tr>
         </thead>
         <tbody>
-          {/* Form */}
           {suppliers?.map((supplier) => (
             <tr key={"tr-" + supplier.id}>
               <PurchaseTableData
@@ -236,6 +255,7 @@ function Suppliers() {
           ))}
         </tbody>
       </table>
+      <div className=" mt-6">{areSuppliersLoading ? <Loading /> : ""}</div>
     </div>
   );
 }
