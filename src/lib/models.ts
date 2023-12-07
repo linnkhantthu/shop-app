@@ -61,12 +61,12 @@ export interface Trader {
 /**
  * Supplier Enum
  */
-export enum SupplierEnum {
-  ID = "id",
-  NAME = "name",
-  EMAIL = "email",
-  ADDRESS = "address",
-  PHONENO = "phoneNo",
+export enum TraderEnum {
+  fullName,
+  email,
+  address,
+  phoneNo,
+  amount,
 }
 
 /**

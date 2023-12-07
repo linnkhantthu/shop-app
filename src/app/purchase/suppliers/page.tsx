@@ -1,10 +1,9 @@
 "use client";
 import DeleteButton from "@/app/components/DeleteButton";
 import Loading from "@/app/components/Loading";
-import PurchaseTableData from "@/app/components/PurchaseTableData";
-import { SupplierEnum, Trader, TraderRole } from "@/lib/models";
+import SupplierTableData from "@/app/components/PurchaseTableData";
+import { TraderEnum, Trader, TraderRole } from "@/lib/models";
 import React, { FormEvent, useEffect, useState } from "react";
-import { json } from "stream/consumers";
 
 function Suppliers() {
   const [areSuppliersLoading, setAreSuppliersLoading] = useState(true);
@@ -16,6 +15,9 @@ function Suppliers() {
   const [isSumbmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  /**
+   * Fetch Traders - role: "SUPPLIER"
+   */
   async function fetchTraders() {
     const res = await fetch("/api/traders?role=SUPPLIER", {
       method: "GET",
@@ -93,27 +95,31 @@ function Suppliers() {
    * @param {string} field Field from SupplierEnum to decide which field to update.
    * @param {string} data Data to update.
    */
-  const handleUpdateSupplier = (id: number, field: string, data: string) => {
+  const handleUpdateSupplier = (
+    id: number,
+    field: TraderEnum,
+    data: string
+  ) => {
+    const updatedSupplier = suppliers.filter((value) => value.id === id)[0];
     switch (field) {
-      case SupplierEnum.NAME:
-        suppliers!.map((value) => (value.fullName = data));
-        setSuppliers(suppliers);
+      case TraderEnum.fullName:
+        updatedSupplier.fullName = data;
         break;
-      case SupplierEnum.EMAIL:
-        suppliers!.map((value) => (value.email = data));
-        setSuppliers(suppliers);
+      case TraderEnum.email:
+        updatedSupplier.email = data;
         break;
-      case SupplierEnum.ADDRESS:
-        suppliers!.map((value) => (value.address = data));
-        setSuppliers(suppliers);
+      case TraderEnum.address:
+        updatedSupplier.address = data;
         break;
-      case SupplierEnum.PHONENO:
-        suppliers!.map((value) => (value.phoneNo = data));
-        setSuppliers(suppliers);
+      case TraderEnum.phoneNo:
+        updatedSupplier.phoneNo = data;
         break;
       default:
         break;
     }
+    // Get the rest of the data
+    const extractedSupplier = suppliers.filter((value) => value.id !== id);
+    setSuppliers([updatedSupplier, ...extractedSupplier]);
   };
 
   return (
@@ -200,50 +206,49 @@ function Suppliers() {
         <tbody>
           {suppliers?.map((supplier) => (
             <tr key={"tr-" + supplier.id}>
-              <PurchaseTableData
+              <SupplierTableData
                 data={supplier.id.toString()}
-                fieldToUpdate={SupplierEnum.ID}
                 handleUpdateSupplier={handleUpdateSupplier}
                 id={supplier.id}
                 inputType={"number"}
                 isInputRequired={false}
                 isEditable={false}
               />
-              <PurchaseTableData
+              <SupplierTableData
                 data={supplier.fullName}
-                fieldToUpdate={SupplierEnum.NAME}
+                fieldToUpdate={TraderEnum.fullName}
                 handleUpdateSupplier={handleUpdateSupplier}
                 id={supplier.id}
                 inputType={"text"}
                 isInputRequired={false}
-                isEditable={false}
+                isEditable={true}
               />
-              <PurchaseTableData
+              <SupplierTableData
                 data={supplier.email!}
-                fieldToUpdate={SupplierEnum.EMAIL}
+                fieldToUpdate={TraderEnum.email}
                 handleUpdateSupplier={handleUpdateSupplier}
                 id={supplier.id}
                 inputType={"email"}
                 isInputRequired={false}
-                isEditable={false}
+                isEditable={true}
               />
-              <PurchaseTableData
+              <SupplierTableData
                 data={supplier.address!}
-                fieldToUpdate={SupplierEnum.ADDRESS}
+                fieldToUpdate={TraderEnum.address}
                 handleUpdateSupplier={handleUpdateSupplier}
                 id={supplier.id}
                 inputType={"text"}
                 isInputRequired={false}
-                isEditable={false}
+                isEditable={true}
               />
-              <PurchaseTableData
+              <SupplierTableData
                 data={supplier.phoneNo!}
-                fieldToUpdate={SupplierEnum.PHONENO}
+                fieldToUpdate={TraderEnum.phoneNo}
                 handleUpdateSupplier={handleUpdateSupplier}
                 id={supplier.id}
                 inputType={"tel"}
                 isInputRequired={false}
-                isEditable={false}
+                isEditable={true}
               />
               <td>
                 <DeleteButton

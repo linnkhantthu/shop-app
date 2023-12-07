@@ -1,4 +1,4 @@
-import { SupplierEnum } from "@/lib/models";
+import { TraderEnum } from "@/lib/models";
 import React, { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 
@@ -9,7 +9,7 @@ import { FaEdit } from "react-icons/fa";
  * @param {string} fieldToUpdate Field from DefinedEnum to decide which field to update
  * @returns {React.JSX.Element}
  */
-function PurchaseTableData({
+function SupplierTableData({
   id,
   data,
   fieldToUpdate,
@@ -20,11 +20,11 @@ function PurchaseTableData({
 }: {
   id: number;
   data?: string;
-  fieldToUpdate: string;
+  fieldToUpdate?: TraderEnum;
   inputType: string;
   isInputRequired: boolean;
   isEditable: boolean;
-  handleUpdateSupplier: (id: number, field: string, data: string) => void;
+  handleUpdateSupplier: (id: number, field: TraderEnum, data: string) => void;
 }): React.JSX.Element {
   const [isEdit, setIsEdit] = useState(false);
   const [_data, setData] = useState(data);
@@ -35,7 +35,7 @@ function PurchaseTableData({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleUpdateSupplier(id, fieldToUpdate, data!);
+            handleUpdateSupplier(id, fieldToUpdate!, data!);
             setIsEdit(!isEdit);
           }}
         >
@@ -60,7 +60,7 @@ function PurchaseTableData({
         </form>
       ) : (
         <div className="flex flex-row">
-          {fieldToUpdate === SupplierEnum.PHONENO ? (
+          {fieldToUpdate === TraderEnum.phoneNo ? (
             <a href={`tel:${_data}`} className="link link-primary">
               {_data}
             </a>
@@ -83,4 +83,4 @@ function PurchaseTableData({
   );
 }
 
-export default PurchaseTableData;
+export default SupplierTableData;

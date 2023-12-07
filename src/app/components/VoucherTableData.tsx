@@ -1,4 +1,4 @@
-import { SupplierEnum } from "@/lib/models";
+import { TraderEnum } from "@/lib/models";
 import React, { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 
@@ -60,7 +60,7 @@ function VoucherTableData({
         </form>
       ) : (
         <div className="flex flex-row">
-          {fieldToUpdate === SupplierEnum.PHONENO ? (
+          {fieldToUpdate === TraderEnum.PHONENO ? (
             <a href={`tel:${_data}`} className="link link-primary">
               {_data}
             </a>
