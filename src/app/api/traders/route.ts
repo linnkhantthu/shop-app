@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { Results, Trader, TraderRole } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import {
+  deleteTraderById,
   getTradersByRole,
   insertTrader,
   updateTraderById,
@@ -95,11 +96,44 @@ export async function PUT(request: NextRequest) {
     const { updatedTrader } = await updateTraderById(id, field, data);
     message = updatedTrader
       ? "Updated trader successfully."
-      : "Failed to update traders.";
+      : "Failed to update trader.";
 
     return createResponse(
       response,
       JSON.stringify({ trader: updatedTrader, message: message }),
+      {
+        status: 200,
+      }
+    );
+  }
+  return createResponse(response, JSON.stringify({ message: message }), {
+    status: 403,
+  });
+}
+
+// { trader: Trader, message: string}
+// DELETE data.json(): traderId
+export async function DELETE(request: NextRequest) {
+  let message: string = Results.REQUIRED_LOGIN;
+
+  // Create response
+  const response = new Response();
+
+  // Create session
+  const session = await getSession(request, response);
+  let { user: currentUser } = session;
+
+  // If User is Logged in
+  if (currentUser) {
+    const { traderId } = await request.json(); // Insert Trader into Database
+    const { deletedTrader } = await deleteTraderById(traderId);
+    message = deletedTrader
+      ? "Deleted trader successfully."
+      : "Failed to delete trader.";
+
+    return createResponse(
+      response,
+      JSON.stringify({ trader: deletedTrader, message: message }),
       {
         status: 200,
       }

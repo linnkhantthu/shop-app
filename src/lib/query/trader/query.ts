@@ -1,5 +1,5 @@
 import prisma from "@/db";
-import { Trader, TraderEnum, TraderRole } from "@/lib/models";
+import { Trader, TraderEnum } from "@/lib/models";
 
 export async function insertTrader(trader: Trader) {
   let addedTrader: Trader | undefined = undefined;
@@ -18,7 +18,6 @@ export async function insertTrader(trader: Trader) {
         role: trader.role,
       },
     })) as Trader;
-    console.log(addedTrader);
   }
   return { addedTrader };
 }
@@ -38,7 +37,6 @@ export async function updateTraderById(
   data: string
 ) {
   let updatedTrader;
-  let dataToUpdate;
   const trader = await prisma.trader.findFirst({ where: { id: id } });
   if (trader) {
     switch (field) {
@@ -76,4 +74,15 @@ export async function updateTraderById(
     }
   }
   return { updatedTrader };
+}
+
+export async function deleteTraderById(traderId: number) {
+  let deletedTrader;
+  const trader = await prisma.trader.findFirst({ where: { id: traderId } });
+  if (trader) {
+    deletedTrader = await prisma.trader.delete({
+      where: { id: traderId },
+    });
+  }
+  return { deletedTrader };
 }

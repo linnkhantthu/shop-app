@@ -14,6 +14,7 @@ function Suppliers() {
   const [email, setEmail] = useState("");
   const [isSumbmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [disabled, setDisable] = useState(false);
 
   /**
    * Fetch Traders - role: "SUPPLIER"
@@ -23,7 +24,11 @@ function Suppliers() {
       method: "GET",
     });
     const { traders, message } = await res.json();
-    setSuppliers(traders);
+    if (traders) {
+      setSuppliers(traders);
+    } else {
+      alert(message);
+    }
   }
 
   useEffect(() => {
@@ -85,8 +90,27 @@ function Suppliers() {
    * Delete Supplier
    * @param {number} id Supplier id to delete.
    */
-  const handleDeleteSupplier = (id: number) => {
-    setSuppliers(suppliers!.filter((supplier) => supplier.id !== id));
+  const handleDeleteSupplier = async (id: number) => {
+    setDisable(true);
+    const res = await fetch("/api/traders", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ traderId: id }),
+    });
+    if (res.ok) {
+      const { trader, message }: { trader: Trader; message: string } =
+        await res.json();
+      if (trader) {
+        setSuppliers(
+          suppliers!.filter((supplier) => supplier.id !== trader.id)
+        );
+      } else {
+        alert(message);
+      }
+    }
+    setDisable(false);
   };
 
   /**
@@ -119,27 +143,6 @@ function Suppliers() {
         alert(message);
       }
     }
-
-    // const updatedSupplier = suppliers.filter((value) => value.id === id)[0];
-    // switch (field) {
-    //   case TraderEnum.fullName:
-    //     updatedSupplier.fullName = data;
-    //     break;
-    //   case TraderEnum.email:
-    //     updatedSupplier.email = data;
-    //     break;
-    //   case TraderEnum.address:
-    //     updatedSupplier.address = data;
-    //     break;
-    //   case TraderEnum.phoneNo:
-    //     updatedSupplier.phoneNo = data;
-    //     break;
-    //   default:
-    //     break;
-    // }
-    // // Get the rest of the data
-    // const extractedSupplier = suppliers.filter((value) => value.id !== id);
-    // setSuppliers([updatedSupplier, ...extractedSupplier]);
   };
 
   return (
@@ -233,6 +236,7 @@ function Suppliers() {
                 inputType={"number"}
                 isInputRequired={false}
                 isEditable={false}
+                disabled={disabled}
               />
               <SupplierTableData
                 data={supplier.fullName}
@@ -242,6 +246,7 @@ function Suppliers() {
                 inputType={"text"}
                 isInputRequired={false}
                 isEditable={true}
+                disabled={disabled}
               />
               <SupplierTableData
                 data={supplier.email!}
@@ -251,6 +256,7 @@ function Suppliers() {
                 inputType={"email"}
                 isInputRequired={false}
                 isEditable={true}
+                disabled={disabled}
               />
               <SupplierTableData
                 data={supplier.address!}
@@ -260,6 +266,7 @@ function Suppliers() {
                 inputType={"text"}
                 isInputRequired={false}
                 isEditable={true}
+                disabled={disabled}
               />
               <SupplierTableData
                 data={supplier.phoneNo!}
@@ -269,6 +276,7 @@ function Suppliers() {
                 inputType={"tel"}
                 isInputRequired={false}
                 isEditable={true}
+                disabled={disabled}
               />
               <td>
                 <DeleteButton
