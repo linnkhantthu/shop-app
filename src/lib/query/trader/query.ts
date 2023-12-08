@@ -37,6 +37,7 @@ export async function updateTraderById(
   data: string
 ) {
   let updatedTrader;
+  let message = "Updated trader successfully.";
   const trader = await prisma.trader.findFirst({ where: { id: id } });
   if (trader) {
     switch (field) {
@@ -47,10 +48,17 @@ export async function updateTraderById(
         });
         break;
       case TraderEnum.email:
-        updatedTrader = await prisma.trader.update({
-          where: { id: id },
-          data: { email: data },
+        const isTraderWithEmailExist = await prisma.trader.findFirst({
+          where: { email: data },
         });
+        if (isTraderWithEmailExist === null) {
+          updatedTrader = await prisma.trader.update({
+            where: { id: id },
+            data: { email: data },
+          });
+        } else {
+          message = "There is already another trader with this email.";
+        }
         break;
       case TraderEnum.address:
         updatedTrader = await prisma.trader.update({
@@ -72,8 +80,10 @@ export async function updateTraderById(
       default:
         break;
     }
+  } else {
+    message = "Could not find the trader to update.";
   }
-  return { updatedTrader };
+  return { updatedTrader, message };
 }
 
 export async function deleteTraderById(traderId: number) {

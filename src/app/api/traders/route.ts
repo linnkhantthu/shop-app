@@ -93,11 +93,7 @@ export async function PUT(request: NextRequest) {
   // If User is Logged in
   if (currentUser) {
     const { id, field, data } = await request.json(); // Insert Trader into Database
-    const { updatedTrader } = await updateTraderById(id, field, data);
-    message = updatedTrader
-      ? "Updated trader successfully."
-      : "Failed to update trader.";
-
+    const { updatedTrader, message } = await updateTraderById(id, field, data);
     return createResponse(
       response,
       JSON.stringify({ trader: updatedTrader, message: message }),

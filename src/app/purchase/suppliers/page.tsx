@@ -3,6 +3,7 @@ import DeleteButton from "@/app/components/DeleteButton";
 import Loading from "@/app/components/Loading";
 import SupplierTableData from "@/app/components/PurchaseTableData";
 import { TraderEnum, Trader, TraderRole } from "@/lib/models";
+import { getTradersByRole } from "@/lib/query/trader/query";
 import React, { FormEvent, useEffect, useState } from "react";
 
 function Suppliers() {
@@ -125,6 +126,7 @@ function Suppliers() {
     data: string
   ) => {
     // PUT data
+    let isSuccess = false;
     const res = await fetch("/api/traders", {
       method: "PUT",
       headers: {
@@ -136,13 +138,15 @@ function Suppliers() {
     if (res.ok) {
       const { trader, message } = await res.json();
 
-      if (trader) {
+      if (trader !== undefined) {
+        isSuccess = true;
         const extractedSupplier = suppliers.filter((value) => value.id !== id);
         setSuppliers([trader, ...extractedSupplier]);
       } else {
         alert(message);
       }
     }
+    return isSuccess;
   };
 
   return (

@@ -25,10 +25,15 @@ function SupplierTableData({
   inputType: string;
   isInputRequired: boolean;
   isEditable: boolean;
-  handleUpdateSupplier: (id: number, field: TraderEnum, data: string) => void;
+  handleUpdateSupplier: (
+    id: number,
+    field: TraderEnum,
+    data: string
+  ) => Promise<boolean>;
   disabled: boolean;
 }): React.JSX.Element {
   const [isEdit, setIsEdit] = useState(false);
+  const [formData, setFormData] = useState(data);
   const [_data, setData] = useState(data);
 
   return (
@@ -38,21 +43,23 @@ function SupplierTableData({
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              handleUpdateSupplier(id, fieldToUpdate!, _data!);
+              handleUpdateSupplier(id, fieldToUpdate!, formData!).then(
+                (value) => (value ? setData(formData) : setData(data))
+              );
               setIsEdit(!isEdit);
             }}
           >
             <input
               className="input w-full text-xs"
               type={inputType}
-              value={_data}
+              value={formData}
               onChange={(e) => {
                 if (inputType === "tel") {
                   const value = e.target.value;
                   if (!Number.isNaN(Number(value)) || value === "+")
-                    setData(value.toString());
+                    setFormData(value.toString());
                 } else {
-                  setData(e.target.value);
+                  setFormData(e.target.value);
                 }
               }}
               autoFocus
