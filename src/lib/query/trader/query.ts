@@ -22,8 +22,10 @@ export async function insertTrader(trader: Trader) {
   return { addedTrader };
 }
 
-export async function getTradersByRole(role: any) {
+export async function getTradersByRole(role: any, page: number) {
   const traders = await prisma.trader.findMany({
+    skip: page,
+    take: 10,
     where: {
       role: role,
     },
@@ -51,7 +53,10 @@ export async function updateTraderById(
         const isTraderWithEmailExist = await prisma.trader.findFirst({
           where: { email: data },
         });
-        if (isTraderWithEmailExist === null) {
+        if (
+          isTraderWithEmailExist === null ||
+          isTraderWithEmailExist.id === id
+        ) {
           updatedTrader = await prisma.trader.update({
             where: { id: id },
             data: { email: data },

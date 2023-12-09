@@ -49,7 +49,7 @@ function Html({ children }: { children: ReactNode }) {
           <ConnectionError />
         ) : (
           <main className="flex flex-row h-full">
-            <div className="drawer">
+            <div className="drawer h-full">
               <input
                 id="my-drawer-3"
                 type="checkbox"

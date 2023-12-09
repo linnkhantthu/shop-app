@@ -16,12 +16,12 @@ function Suppliers() {
   const [isSumbmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [disabled, setDisable] = useState(false);
-
+  const [page, setPage] = useState(0);
   /**
    * Fetch Traders - role: "SUPPLIER"
    */
   async function fetchTraders() {
-    const res = await fetch("/api/traders?role=SUPPLIER", {
+    const res = await fetch(`/api/traders?role=SUPPLIER&page=${page}`, {
       method: "GET",
     });
     const { traders, message } = await res.json();
@@ -136,12 +136,15 @@ function Suppliers() {
     });
 
     if (res.ok) {
-      const { trader, message } = await res.json();
+      const { trader, message }: { trader: Trader; message: string } =
+        await res.json();
 
       if (trader !== undefined) {
         isSuccess = true;
         const extractedSupplier = suppliers.filter((value) => value.id !== id);
-        setSuppliers([trader, ...extractedSupplier]);
+        setSuppliers(
+          [trader, ...extractedSupplier].sort((a, b) => (a.id > b.id ? -1 : 1))
+        );
       } else {
         alert(message);
       }
@@ -150,7 +153,7 @@ function Suppliers() {
   };
 
   return (
-    <div className="w-full card">
+    <div className="w-full card h-full">
       <h1 className="text-lg mb-2">Suppliers</h1>
       <fieldset>
         <legend>Add Supplier</legend>
@@ -293,6 +296,11 @@ function Suppliers() {
         </tbody>
       </table>
       <div className=" mt-6">{areSuppliersLoading ? <Loading /> : ""}</div>
+      <div className="h-full">
+        <span className=" rounded-sm bottom-3 mx-3 absolute bg-info text-info-content p-2">
+          1
+        </span>
+      </div>
     </div>
   );
 }

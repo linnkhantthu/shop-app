@@ -59,8 +59,9 @@ export async function GET(request: NextRequest) {
   if (currentUser) {
     const { searchParams } = new URL(request.url);
     const role = searchParams.get("role");
+    const page = parseInt(searchParams.get("page")!);
     // Insert Trader into Database
-    const { traders } = await getTradersByRole(role);
+    const { traders } = await getTradersByRole(role, page);
     message = traders
       ? "Fetched traders successfully."
       : "Failed to fetch traders.";
