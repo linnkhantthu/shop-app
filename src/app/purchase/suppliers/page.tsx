@@ -3,6 +3,7 @@ import DeleteButton from "@/app/components/DeleteButton";
 import Loading from "@/app/components/Loading";
 import Pagination from "@/app/components/Pagination";
 import SupplierTableData from "@/app/components/PurchaseTableData";
+import { fetchTraders } from "@/lib/frontendUtils";
 import { TraderEnum, Trader, TraderRole } from "@/lib/models";
 import React, { FormEvent, useEffect, useState } from "react";
 
@@ -30,35 +31,47 @@ function Suppliers() {
   /**
    * Fetch Traders - role: "SUPPLIER"
    */
-  async function fetchTraders() {
-    const res = await fetch(
-      `/api/traders?role=SUPPLIER&page=${page}&cursor=${cursor}`,
-      {
-        method: "GET",
-      }
-    );
-    const {
-      traders,
-      count,
-      message,
-    }: { traders: Trader[]; count: number; message: string } = await res.json();
-    if (traders) {
-      setSuppliers(traders);
-      setNumberPages(count);
-      if (traders.length !== 0) {
-        const [lastTrader] = traders.slice(-1);
-        setCursor(lastTrader.id);
-      }
-    } else {
-      alert(message);
-    }
-  }
+  // async function fetchTraders() {
+  //   const res = await fetch(
+  //     `/api/traders?role=SUPPLIER&page=${page}&cursor=${cursor}`,
+  //     {
+  //       method: "GET",
+  //     }
+  //   );
+  //   const {
+  //     traders,
+  //     count,
+  //     message,
+  //   }: { traders: Trader[]; count: number; message: string } = await res.json();
+  // if (traders) {
+  //   setSuppliers(traders);
+  //   setNumberPages(count);
+  //   if (traders.length !== 0) {
+  //     const [lastTrader] = traders.slice(-1);
+  //     setCursor(lastTrader.id);
+  //   }
+  // } else {
+  //   alert(message);
+  // }
+  // }
 
   useEffect(() => {
     setAreSuppliersLoading(true);
-    fetchTraders().then(() => {
-      setAreSuppliersLoading(false);
-    });
+    fetchTraders(TraderRole.SUPPLIER, page, cursor).then(
+      ({ traders, count, message }) => {
+        if (traders) {
+          setSuppliers(traders);
+          setNumberPages(Math.ceil(count / 10));
+          if (traders.length !== 0) {
+            const [lastTrader] = traders.slice(-1);
+            setCursor(lastTrader.id);
+          }
+        } else {
+          alert(message);
+        }
+        setAreSuppliersLoading(false);
+      }
+    );
   }, [page]);
 
   // Styles for input
@@ -246,7 +259,7 @@ function Suppliers() {
             </button>
           </form>
         </fieldset>
-        <div className=" h-full overflow-x-auto">
+        <div>
           <table className="table table-xs sm:table-sm bg-base-200 mt-2">
             <thead>
               <tr>

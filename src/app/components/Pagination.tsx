@@ -14,13 +14,13 @@ function Pagination({
       {array.map((v, i) => {
         return (
           <span
-            key={`pagination-${i++}`}
+            key={`pagination-${i + 1}`}
             className=" rounded-sm p-2 mx-1 bg-info text-info-content cursor-pointer"
             onClick={() => {
-              setPage(i++);
+              setPage(i + 1);
             }}
           >
-            {i++}
+            {i + 1}
           </span>
         );
       })}
