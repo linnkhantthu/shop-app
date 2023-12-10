@@ -1,9 +1,9 @@
 "use client";
 import DeleteButton from "@/app/components/DeleteButton";
 import Loading from "@/app/components/Loading";
+import Pagination from "@/app/components/Pagination";
 import SupplierTableData from "@/app/components/PurchaseTableData";
 import { TraderEnum, Trader, TraderRole } from "@/lib/models";
-import { getTradersByRole } from "@/lib/query/trader/query";
 import React, { FormEvent, useEffect, useState } from "react";
 
 function Suppliers() {
@@ -16,27 +16,43 @@ function Suppliers() {
   const [isSumbmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [disabled, setDisable] = useState(false);
-  const [page, setPage] = useState(0);
+  const [numberOfPages, setNumberPages] = useState(0);
+  const [page, setPage] = useState(1);
+  const [cursor, setCursor] = useState(0);
+
   /**
    * Fetch Traders - role: "SUPPLIER"
    */
   async function fetchTraders() {
-    const res = await fetch(`/api/traders?role=SUPPLIER&page=${page}`, {
-      method: "GET",
-    });
-    const { traders, message } = await res.json();
+    const res = await fetch(
+      `/api/traders?role=SUPPLIER&page=${page}&cursor=${cursor}`,
+      {
+        method: "GET",
+      }
+    );
+    const {
+      traders,
+      count,
+      message,
+    }: { traders: Trader[]; count: number; message: string } = await res.json();
     if (traders) {
       setSuppliers(traders);
+      setNumberPages(count);
+      if (traders.length !== 0) {
+        const [lastTrader] = traders.slice(-1);
+        setCursor(lastTrader.id);
+      }
     } else {
       alert(message);
     }
   }
 
   useEffect(() => {
+    setAreSuppliersLoading(true);
     fetchTraders().then(() => {
       setAreSuppliersLoading(false);
     });
-  }, []);
+  }, [page]);
 
   // Styles for input
   const inputStyle =
@@ -153,155 +169,155 @@ function Suppliers() {
   };
 
   return (
-    <div className="w-full card h-full">
-      <h1 className="text-lg mb-2">Suppliers</h1>
-      <fieldset>
-        <legend>Add Supplier</legend>
-        <form
-          id="addSupplierForm"
-          className="flex flex-row"
-          onSubmit={handleAddSupplier}
-        >
-          <input
-            className={
-              isSubmitted && name === "" ? inputStyleError : inputStyle
-            }
-            type="text"
-            name="name"
-            value={name}
-            placeholder="Name"
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-
-          <input
-            className={
-              isSubmitted && email === "" ? inputStyleError : inputStyle
-            }
-            type="email"
-            name="email"
-            value={email}
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-
-          <input
-            className={
-              isSubmitted && address === "" ? inputStyleError : inputStyle
-            }
-            type="text"
-            name="address"
-            value={address}
-            placeholder="Address"
-            onChange={(e) => setAddress(e.target.value)}
-            required
-          />
-
-          <input
-            className={
-              isSubmitted && phoneNo === "" ? inputStyleError : inputStyle
-            }
-            type="tel"
-            name="phoneNo"
-            value={phoneNo}
-            placeholder="Ph No."
-            onChange={(e) => {
-              const value = e.target.value;
-              if (!Number.isNaN(Number(value)) || value === "+")
-                setPhoneNo(value.toString());
-            }}
-            required
-          />
-
-          <button
-            className="btn btn-success btn-xs sm:btn-sm mr-2 mt-2"
-            type="submit"
+    <>
+      <div className="w-full card h-full">
+        <h1 className="text-lg mb-2">Suppliers</h1>
+        <fieldset>
+          <legend>Add Supplier</legend>
+          <form
+            id="addSupplierForm"
+            className="flex flex-row"
+            onSubmit={handleAddSupplier}
           >
-            {isSumbmitting ? <Loading /> : "Submit"}
-          </button>
-        </form>
-      </fieldset>
-      <table className="table table-xs sm:table-sm bg-base-200 mt-2">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Supplier Name</th>
-            <th>Email</th>
-            <th className=" w-1/3">Address</th>
-            <th>Phone No.</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {suppliers?.map((supplier) => (
-            <tr key={"tr-" + supplier.id}>
-              <SupplierTableData
-                data={supplier.id.toString()}
-                handleUpdateSupplier={handleUpdateSupplier}
-                id={supplier.id}
-                inputType={"number"}
-                isInputRequired={false}
-                isEditable={false}
-                disabled={disabled}
-              />
-              <SupplierTableData
-                data={supplier.fullName}
-                fieldToUpdate={TraderEnum.fullName}
-                handleUpdateSupplier={handleUpdateSupplier}
-                id={supplier.id}
-                inputType={"text"}
-                isInputRequired={false}
-                isEditable={true}
-                disabled={disabled}
-              />
-              <SupplierTableData
-                data={supplier.email!}
-                fieldToUpdate={TraderEnum.email}
-                handleUpdateSupplier={handleUpdateSupplier}
-                id={supplier.id}
-                inputType={"email"}
-                isInputRequired={false}
-                isEditable={true}
-                disabled={disabled}
-              />
-              <SupplierTableData
-                data={supplier.address!}
-                fieldToUpdate={TraderEnum.address}
-                handleUpdateSupplier={handleUpdateSupplier}
-                id={supplier.id}
-                inputType={"text"}
-                isInputRequired={false}
-                isEditable={true}
-                disabled={disabled}
-              />
-              <SupplierTableData
-                data={supplier.phoneNo!}
-                fieldToUpdate={TraderEnum.phoneNo}
-                handleUpdateSupplier={handleUpdateSupplier}
-                id={supplier.id}
-                inputType={"tel"}
-                isInputRequired={false}
-                isEditable={true}
-                disabled={disabled}
-              />
-              <td>
-                <DeleteButton
-                  handleDeleteSupplier={handleDeleteSupplier}
-                  id={supplier.id}
-                />
-              </td>
+            <input
+              className={
+                isSubmitted && name === "" ? inputStyleError : inputStyle
+              }
+              type="text"
+              name="name"
+              value={name}
+              placeholder="Name"
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+
+            <input
+              className={
+                isSubmitted && email === "" ? inputStyleError : inputStyle
+              }
+              type="email"
+              name="email"
+              value={email}
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+
+            <input
+              className={
+                isSubmitted && address === "" ? inputStyleError : inputStyle
+              }
+              type="text"
+              name="address"
+              value={address}
+              placeholder="Address"
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+
+            <input
+              className={
+                isSubmitted && phoneNo === "" ? inputStyleError : inputStyle
+              }
+              type="tel"
+              name="phoneNo"
+              value={phoneNo}
+              placeholder="Ph No."
+              onChange={(e) => {
+                const value = e.target.value;
+                if (!Number.isNaN(Number(value)) || value === "+")
+                  setPhoneNo(value.toString());
+              }}
+              required
+            />
+
+            <button
+              className="btn btn-success btn-xs sm:btn-sm mr-2 mt-2"
+              type="submit"
+            >
+              {isSumbmitting ? <Loading /> : "Submit"}
+            </button>
+          </form>
+        </fieldset>
+        <table className="table table-xs sm:table-sm bg-base-200 mt-2">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Supplier Name</th>
+              <th>Email</th>
+              <th className=" w-1/3">Address</th>
+              <th>Phone No.</th>
+              <th></th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className=" mt-6">{areSuppliersLoading ? <Loading /> : ""}</div>
-      <div className="h-full">
-        <span className=" rounded-sm bottom-3 mx-3 absolute bg-info text-info-content p-2">
-          1
-        </span>
+          </thead>
+          <tbody>
+            {suppliers?.map((supplier) => (
+              <tr key={"tr-" + supplier.id}>
+                <SupplierTableData
+                  data={supplier.id.toString()}
+                  handleUpdateSupplier={handleUpdateSupplier}
+                  id={supplier.id}
+                  inputType={"number"}
+                  isInputRequired={false}
+                  isEditable={false}
+                  disabled={disabled}
+                />
+                <SupplierTableData
+                  data={supplier.fullName}
+                  fieldToUpdate={TraderEnum.fullName}
+                  handleUpdateSupplier={handleUpdateSupplier}
+                  id={supplier.id}
+                  inputType={"text"}
+                  isInputRequired={false}
+                  isEditable={true}
+                  disabled={disabled}
+                />
+                <SupplierTableData
+                  data={supplier.email!}
+                  fieldToUpdate={TraderEnum.email}
+                  handleUpdateSupplier={handleUpdateSupplier}
+                  id={supplier.id}
+                  inputType={"email"}
+                  isInputRequired={false}
+                  isEditable={true}
+                  disabled={disabled}
+                />
+                <SupplierTableData
+                  data={supplier.address!}
+                  fieldToUpdate={TraderEnum.address}
+                  handleUpdateSupplier={handleUpdateSupplier}
+                  id={supplier.id}
+                  inputType={"text"}
+                  isInputRequired={false}
+                  isEditable={true}
+                  disabled={disabled}
+                />
+                <SupplierTableData
+                  data={supplier.phoneNo!}
+                  fieldToUpdate={TraderEnum.phoneNo}
+                  handleUpdateSupplier={handleUpdateSupplier}
+                  id={supplier.id}
+                  inputType={"tel"}
+                  isInputRequired={false}
+                  isEditable={true}
+                  disabled={disabled}
+                />
+                <td>
+                  <DeleteButton
+                    handleDeleteSupplier={handleDeleteSupplier}
+                    id={supplier.id}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className=" mt-6">{areSuppliersLoading ? <Loading /> : ""}</div>
       </div>
-    </div>
+      <div className="h-full">
+        <Pagination numberOfPages={numberOfPages} setPage={setPage} />
+      </div>
+    </>
   );
 }
 

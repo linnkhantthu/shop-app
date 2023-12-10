@@ -22,15 +22,40 @@ export async function insertTrader(trader: Trader) {
   return { addedTrader };
 }
 
-export async function getTradersByRole(role: any, page: number) {
-  const traders = await prisma.trader.findMany({
-    skip: page,
-    take: 10,
-    where: {
-      role: role,
-    },
-  });
-  return { traders };
+export async function getTradersByRole(
+  role: any,
+  page: number,
+  cursor?: number
+) {
+  let traders;
+  const count = await prisma.trader.count();
+  if (page === 1) {
+    traders = await prisma.trader.findMany({
+      take: 10, // 10
+      where: {
+        role: role,
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+  } else {
+    traders = await prisma.trader.findMany({
+      take: 10, // 10
+      skip: 1,
+      cursor: {
+        id: cursor,
+      },
+      where: {
+        role: role,
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+  }
+
+  return { traders, count };
 }
 
 export async function updateTraderById(
