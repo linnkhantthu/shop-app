@@ -3,7 +3,7 @@ import DeleteButton from "@/app/components/DeleteButton";
 import Loading from "@/app/components/Loading";
 import Pagination from "@/app/components/Pagination";
 import SupplierTableData from "@/app/components/PurchaseTableData";
-import { fetchTraders } from "@/lib/frontendUtils";
+import { addTrader, fetchTraders } from "@/lib/frontendUtils";
 import { TraderEnum, Trader, TraderRole } from "@/lib/models";
 import React, { FormEvent, useEffect, useState } from "react";
 
@@ -13,7 +13,7 @@ function Suppliers() {
   const [suppliers, setSuppliers] = useState<Trader[]>([]);
 
   // Form controllers
-  const [name, setName] = useState("");
+  const [fullname, setFullname] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
   const [email, setEmail] = useState("");
@@ -27,33 +27,6 @@ function Suppliers() {
   const [numberOfPages, setNumberPages] = useState(0);
   const [page, setPage] = useState(1);
   const [cursor, setCursor] = useState(0);
-
-  /**
-   * Fetch Traders - role: "SUPPLIER"
-   */
-  // async function fetchTraders() {
-  //   const res = await fetch(
-  //     `/api/traders?role=SUPPLIER&page=${page}&cursor=${cursor}`,
-  //     {
-  //       method: "GET",
-  //     }
-  //   );
-  //   const {
-  //     traders,
-  //     count,
-  //     message,
-  //   }: { traders: Trader[]; count: number; message: string } = await res.json();
-  // if (traders) {
-  //   setSuppliers(traders);
-  //   setNumberPages(count);
-  //   if (traders.length !== 0) {
-  //     const [lastTrader] = traders.slice(-1);
-  //     setCursor(lastTrader.id);
-  //   }
-  // } else {
-  //   alert(message);
-  // }
-  // }
 
   useEffect(() => {
     setAreSuppliersLoading(true);
@@ -84,41 +57,21 @@ function Suppliers() {
    * Add Supplier
    * @param {FormEvent} e onSubmit form event.
    */
-  async function handleAddSupplier(e: FormEvent) {
+  async function handleAddTrader(e: FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
     setIsSubmitted(true);
-    if (name !== "" && address !== "" && phoneNo !== "" && email !== "") {
-      const newSupplier: Trader = {
-        id: Math.floor(Math.random() * 100),
-        fullName: name,
-        email: email,
-        address: address,
-        phoneNo: phoneNo,
-        role: TraderRole.SUPPLIER,
-        amount: 0,
-      };
-      const res = await fetch("/api/traders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newSupplier),
-      });
-      if (res.ok) {
-        const { trader, message }: { trader: Trader; message: string } =
-          await res.json();
-        if (trader) {
-          setSuppliers([trader, ...suppliers]);
-        } else {
-          alert(message);
-        }
-      }
-      setName("");
-      setEmail("");
-      setAddress("");
-      setPhoneNo("");
-      setIsSubmitted(false);
+    const { trader, message } = await addTrader(
+      fullname,
+      email,
+      address,
+      phoneNo,
+      TraderRole.SUPPLIER
+    );
+    if (trader) {
+      setSuppliers([trader, ...suppliers]);
+    } else {
+      alert(message);
     }
     setIsSubmitting(false);
   }
@@ -147,6 +100,13 @@ function Suppliers() {
         alert(message);
       }
     }
+
+    // Reset the input fields
+    setFullname("");
+    setEmail("");
+    setAddress("");
+    setPhoneNo("");
+
     setDisable(false);
   };
 
@@ -197,17 +157,17 @@ function Suppliers() {
           <form
             id="addSupplierForm"
             className="flex flex-row"
-            onSubmit={handleAddSupplier}
+            onSubmit={handleAddTrader}
           >
             <input
               className={
-                isSubmitted && name === "" ? inputStyleError : inputStyle
+                isSubmitted && fullname === "" ? inputStyleError : inputStyle
               }
               type="text"
               name="name"
-              value={name}
+              value={fullname}
               placeholder="Name"
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setFullname(e.target.value)}
               required
             />
 
