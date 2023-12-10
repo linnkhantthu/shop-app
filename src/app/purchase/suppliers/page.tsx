@@ -239,84 +239,84 @@ function Suppliers() {
             </button>
           </form>
         </fieldset>
-        <table className="table table-xs sm:table-sm bg-base-200 mt-2">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Supplier Name</th>
-              <th>Email</th>
-              <th className=" w-1/3">Address</th>
-              <th>Phone No.</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {suppliers?.map((supplier) => (
-              <tr key={"tr-" + supplier.id}>
-                <SupplierTableData
-                  data={supplier.id.toString()}
-                  handleUpdateSupplier={handleUpdateSupplier}
-                  id={supplier.id}
-                  inputType={"number"}
-                  isInputRequired={false}
-                  isEditable={false}
-                  disabled={disabled}
-                />
-                <SupplierTableData
-                  data={supplier.fullName}
-                  fieldToUpdate={TraderEnum.fullName}
-                  handleUpdateSupplier={handleUpdateSupplier}
-                  id={supplier.id}
-                  inputType={"text"}
-                  isInputRequired={false}
-                  isEditable={true}
-                  disabled={disabled}
-                />
-                <SupplierTableData
-                  data={supplier.email!}
-                  fieldToUpdate={TraderEnum.email}
-                  handleUpdateSupplier={handleUpdateSupplier}
-                  id={supplier.id}
-                  inputType={"email"}
-                  isInputRequired={false}
-                  isEditable={true}
-                  disabled={disabled}
-                />
-                <SupplierTableData
-                  data={supplier.address!}
-                  fieldToUpdate={TraderEnum.address}
-                  handleUpdateSupplier={handleUpdateSupplier}
-                  id={supplier.id}
-                  inputType={"text"}
-                  isInputRequired={false}
-                  isEditable={true}
-                  disabled={disabled}
-                />
-                <SupplierTableData
-                  data={supplier.phoneNo!}
-                  fieldToUpdate={TraderEnum.phoneNo}
-                  handleUpdateSupplier={handleUpdateSupplier}
-                  id={supplier.id}
-                  inputType={"tel"}
-                  isInputRequired={false}
-                  isEditable={true}
-                  disabled={disabled}
-                />
-                <td>
-                  <DeleteButton
-                    handleDeleteSupplier={handleDeleteSupplier}
-                    id={supplier.id}
-                  />
-                </td>
+        <div className=" h-full overflow-x-auto">
+          <table className="table table-xs sm:table-sm bg-base-200 mt-2">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Supplier Name</th>
+                <th>Email</th>
+                <th className=" w-1/3">Address</th>
+                <th>Phone No.</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {suppliers?.map((supplier) => (
+                <tr key={"tr-" + supplier.id}>
+                  <SupplierTableData
+                    data={supplier.id.toString()}
+                    handleUpdateSupplier={handleUpdateSupplier}
+                    id={supplier.id}
+                    inputType={"number"}
+                    isInputRequired={false}
+                    isEditable={false}
+                    disabled={disabled}
+                  />
+                  <SupplierTableData
+                    data={supplier.fullName}
+                    fieldToUpdate={TraderEnum.fullName}
+                    handleUpdateSupplier={handleUpdateSupplier}
+                    id={supplier.id}
+                    inputType={"text"}
+                    isInputRequired={false}
+                    isEditable={true}
+                    disabled={disabled}
+                  />
+                  <SupplierTableData
+                    data={supplier.email!}
+                    fieldToUpdate={TraderEnum.email}
+                    handleUpdateSupplier={handleUpdateSupplier}
+                    id={supplier.id}
+                    inputType={"email"}
+                    isInputRequired={false}
+                    isEditable={true}
+                    disabled={disabled}
+                  />
+                  <SupplierTableData
+                    data={supplier.address!}
+                    fieldToUpdate={TraderEnum.address}
+                    handleUpdateSupplier={handleUpdateSupplier}
+                    id={supplier.id}
+                    inputType={"text"}
+                    isInputRequired={false}
+                    isEditable={true}
+                    disabled={disabled}
+                  />
+                  <SupplierTableData
+                    data={supplier.phoneNo!}
+                    fieldToUpdate={TraderEnum.phoneNo}
+                    handleUpdateSupplier={handleUpdateSupplier}
+                    id={supplier.id}
+                    inputType={"tel"}
+                    isInputRequired={false}
+                    isEditable={true}
+                    disabled={disabled}
+                  />
+                  <td>
+                    <DeleteButton
+                      handleDeleteSupplier={handleDeleteSupplier}
+                      id={supplier.id}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <div className=" mt-6">{areSuppliersLoading ? <Loading /> : ""}</div>
       </div>
-      <div className="h-full">
-        <Pagination numberOfPages={numberOfPages} setPage={setPage} />
-      </div>
+      <Pagination numberOfPages={numberOfPages} setPage={setPage} />
     </>
   );
 }

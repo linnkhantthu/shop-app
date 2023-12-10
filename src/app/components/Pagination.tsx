@@ -10,14 +10,14 @@ function Pagination({
   const array = new Array(numberOfPages).fill(0);
 
   return (
-    <div className="bottom-0 mx-3 absolute">
+    <div className="bottom-0 p-2 sticky bg-base-100">
       {array.map((v, i) => {
         return (
           <span
-            key={`pagination-${i + 1}`}
+            key={`pagination-${i++}`}
             className=" rounded-sm p-2 mx-1 bg-info text-info-content cursor-pointer"
             onClick={() => {
-              setPage(i + 1);
+              setPage(i++);
             }}
           >
             {i + 1}

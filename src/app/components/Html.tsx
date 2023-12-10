@@ -55,7 +55,7 @@ function Html({ children }: { children: ReactNode }) {
                 type="checkbox"
                 className="drawer-toggle"
               />
-              <div className="drawer-content flex flex-col">
+              <div className="drawer-content flex flex-col h-full">
                 {/* Navbar */}
                 <div className="navbar p-2 mt-0 fixed w-full z-10 top-0 bg-base-300">
                   <div className="flex-none">
