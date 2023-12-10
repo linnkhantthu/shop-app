@@ -7,15 +7,22 @@ import { TraderEnum, Trader, TraderRole } from "@/lib/models";
 import React, { FormEvent, useEffect, useState } from "react";
 
 function Suppliers() {
+  // States
   const [areSuppliersLoading, setAreSuppliersLoading] = useState(true);
   const [suppliers, setSuppliers] = useState<Trader[]>([]);
+
+  // Form controllers
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
   const [email, setEmail] = useState("");
+
+  // UI controls
   const [isSumbmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [disabled, setDisable] = useState(false);
+
+  // Pagination Control
   const [numberOfPages, setNumberPages] = useState(0);
   const [page, setPage] = useState(1);
   const [cursor, setCursor] = useState(0);

@@ -20,7 +20,7 @@ function VoucherTableData({
 }: {
   id: number;
   data: string;
-  fieldToUpdate: string;
+  fieldToUpdate: any;
   inputType: string;
   isInputRequired: boolean;
   isEditable: boolean;
@@ -60,7 +60,7 @@ function VoucherTableData({
         </form>
       ) : (
         <div className="flex flex-row">
-          {fieldToUpdate === TraderEnum.PHONENO ? (
+          {fieldToUpdate === TraderEnum.phoneNo ? (
             <a href={`tel:${_data}`} className="link link-primary">
               {_data}
             </a>

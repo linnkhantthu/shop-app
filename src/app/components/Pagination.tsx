@@ -20,7 +20,7 @@ function Pagination({
               setPage(i++);
             }}
           >
-            {i + 1}
+            {i++}
           </span>
         );
       })}

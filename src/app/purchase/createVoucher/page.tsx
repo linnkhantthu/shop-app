@@ -8,33 +8,65 @@ import React, { useEffect, useState } from "react";
 
 function CreateVoucher() {
   // States
-  const [traderList, setTraderList] = useState<Trader[]>([]); // Needs Init
-  const [trader, setTrader] = useState<Trader>(); // Will need to select by User
+  const [areSuppliersLoading, setAreSuppliersLoading] = useState(true);
+  const [suppliers, setSuppliers] = useState<Trader[]>([]); // Needs Init
+  const [supplier, setSupplier] = useState<Trader>(); // Will need to select by User
   const [voucher, setVoucher] = useState<Voucher>(); // Need Init
   const [voucherItems, setVoucherItems] = useState<VoucherItem[]>([]); // CRUD by User
   const [productList, setProductList] = useState<Product[]>([]);
 
-  // // Vars: currentUser
-  // const user: User = {
-  //   id: 1,
-  //   firstName: "Lin Khant",
-  //   lastName: "Thu",
-  //   dob: getDateNow(),
-  //   email: "linnkhantthu@gmail.com",
-  //   role: UserRole.USER,
-  // };
+  // Pagination Control
+  const [page, setPage] = useState(1);
+  const [cursor, setCursor] = useState(0);
+
+  /**
+   * Fetch Traders - role: "SUPPLIER"
+   */
+  async function fetchTraders() {
+    const res = await fetch(
+      `/api/traders?role=SUPPLIER&page=${page}&cursor=${cursor}`,
+      {
+        method: "GET",
+      }
+    );
+    const {
+      traders,
+      count,
+      message,
+    }: { traders: Trader[]; count: number; message: string } = await res.json();
+    if (traders) {
+      setSuppliers(traders);
+      if (traders.length !== 0) {
+        const [lastTrader] = traders.slice(-1);
+        setCursor(lastTrader.id);
+      }
+    } else {
+      alert(message);
+    }
+  }
+
+  /**
+   * Create Voucher
+   */
+  async function createVoucher() {
+    const res = await fetch("/api/vouchers");
+  }
 
   useEffect(() => {
     // Init
-  }, []);
+    setAreSuppliersLoading(true);
+    fetchTraders().then(() => {
+      setAreSuppliersLoading(false);
+    });
+  }, [page]);
 
   const handleOnSelect = (
     e: React.SyntheticEvent<HTMLSelectElement, Event>
   ) => {
-    const selectedTrader = traderList?.filter(
+    const selectedTrader = suppliers?.filter(
       (value) => value.id.toString() === e.currentTarget.value
     )!;
-    setTrader(selectedTrader[0]);
+    setSupplier(selectedTrader[0]);
   };
 
   return (
@@ -45,21 +77,24 @@ function CreateVoucher() {
         <ul className="w-full">
           <li>
             <span>Supplier ID#:</span>
-            <span>{trader?.id}</span>
+            <span>{supplier?.id}</span>
           </li>
           <li>
             <span className="w-full">Supplier Name:</span>
-            <Select traders={traderList} handleOnSelect={handleOnSelect} />
+            <Select traders={suppliers} handleOnSelect={handleOnSelect} />
           </li>
           <li>
             <span>Address:</span>
-            <span>{trader?.address}</span>
+            <span>{supplier?.address}</span>
           </li>
           <li>
             <span>Ph No.</span>
             <span>
-              <a href={`tel:${trader?.phoneNo}`} className=" link link-primary">
-                {trader?.phoneNo}
+              <a
+                href={`tel:${supplier?.phoneNo}`}
+                className=" link link-primary"
+              >
+                {supplier?.phoneNo}
               </a>
             </span>
           </li>
@@ -160,7 +195,14 @@ function CreateVoucher() {
                     isEditable={false}
                   />
                   <td>
-                    <DeleteButton handleDeleteSupplier={() => {}} id={1} />
+                    <DeleteButton
+                      id={1}
+                      handleDeleteSupplier={function (
+                        id: number
+                      ): Promise<void> {
+                        throw new Error("Function not implemented.");
+                      }}
+                    />
                   </td>
                 </tr>
               );
