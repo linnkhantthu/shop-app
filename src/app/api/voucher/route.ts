@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { Results, Trader } from "@/lib/models";
+import { Results, Trader, Voucher } from "@/lib/models";
 import { createResponse, getSession } from "@/lib/session";
 import {
   deleteTraderById,
@@ -8,8 +8,8 @@ import {
   updateTraderById,
 } from "@/lib/query/trader/query";
 
-// { trader: Trader, message: Results}
-// POST data.json(): Trader
+// { voucher: Voucher, message: Results}
+// POST data.json(): Voucher
 export async function POST(request: NextRequest) {
   let message: string = Results.REQUIRED_LOGIN;
 
@@ -22,10 +22,10 @@ export async function POST(request: NextRequest) {
 
   // If User is Logged in
   if (currentUser) {
-    const traderData: Trader = await request.json();
+    const voucherData: Voucher = await request.json();
 
     // Insert Trader into Database
-    const { addedTrader } = await insertTrader(traderData);
+    const { addedTrader } = await insertVoucher(traderData);
     message = addedTrader
       ? "Added new trader successfully."
       : "The trader(email) is already exist.Check the email and try again.";

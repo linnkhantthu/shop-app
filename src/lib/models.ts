@@ -53,8 +53,20 @@ export interface Trader {
   email: string;
   address: string;
   phoneNo: string;
-  amount: number;
+  amount: number | null;
   role: TraderRole;
+  userId: number | null;
+}
+
+export interface Voucher{
+  id: number;
+    date: Date;
+    currency: Currency;
+    amount: number;
+    voucherType: VoucherType;
+    traderId: number;
+    userId: number;
+  
 }
 
 // Enums to decide which field we are refering
@@ -104,6 +116,13 @@ export enum Currency {
   YUAN,
   MyanmarKyats,
   USD,
+}
+
+export enum VoucherType{
+  PURCHASE,
+  PURCHASERETURN,
+  SALE,
+  SALERETURN,
 }
 
 /**

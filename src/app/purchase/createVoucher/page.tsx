@@ -50,6 +50,7 @@ function CreateVoucher() {
    */
   async function createVoucher() {
     const res = await fetch("/api/vouchers");
+
   }
 
   useEffect(() => {
@@ -107,6 +108,7 @@ function CreateVoucher() {
         <ul className="w-full">
           <li>{voucher?.date.toDateString()}</li>
           <li>Invoice No#: {voucher?.id}</li>
+          <li>Currency: $</li>
         </ul>
       </div>
 
